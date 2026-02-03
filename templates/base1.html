@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Scheduler | Academic Excellence{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A',    /* Deep Academic Blue */
+                        secondary: '#0D9488',  /* Teal Accent */
+                        highlight: '#22D3EE',  /* Electric Cyan */
+                        bgSoft: '#F8FAFC',     /* Soft Light Gray */
+                        cardWhite: '#FFFFFF',
+                        borderSubtle: '#E2E8F0',
+                        textDark: '#0F172A',
+                        textGray: '#64748B',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Patterned Background Freeze */
+        .academic-bg {
+            background-color: #F8FAFC;
+            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+
+        /* Glowing Button Freeze */
+        .btn-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0px rgba(34, 211, 238, 0);
+        }
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+            filter: brightness(110%);
+        }
+
+        /* Smooth Glass Navbar */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="academic-bg min-h-screen flex flex-col font-sans text-textDark">
+
+    <div class="h-1 w-full bg-gradient-to-r from-primary via-highlight to-secondary"></div>
+
+    <nav class="glass-nav sticky top-0 z-50 py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white btn-glow">
+                    <i class="fa-solid fa-calendar-check text-xl"></i>
+                </div>
+                <span class="font-display text-xl font-bold tracking-tight text-primary">
+                    Smart<span class="text-secondary">Scheduler</span>
+                </span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 font-medium text-sm text-textGray">
+                <a href="#features" class="hover:text-primary transition-colors">Features</a>
+                <a href="#workflow" class="hover:text-primary transition-colors">Workflow</a>
+                <a href="/accounts/login/" class="text-primary font-bold">Sign In</a>
+                <a href="/accounts/signup/" class="btn-glow bg-primary text-white px-6 py-2.5 rounded-xl flex items-center gap-2">
+                    Get Started <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white border-t border-borderSubtle py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-2 opacity-60">
+                    <i class="fa-solid fa-graduation-cap text-primary"></i>
+                    <span class="font-display font-bold text-sm uppercase tracking-widest">B.Tech Final Year Project</span>
+                </div>
+                <p class="text-textGray text-sm">
+                    &copy; 2026 Smart Classroom & Timetable Scheduler. All Rights Reserved.
+                </p>
+                <div class="flex gap-4 text-textGray">
+                    <i class="fa-brands fa-github hover:text-primary cursor-pointer"></i>
+                    <i class="fa-brands fa-linkedin hover:text-primary cursor-pointer"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
