@@ -1,0 +1,42 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Time Slots | Smart Scheduler{% endblock %}
+{% block header_title %}Scheduling Grid{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in-up">
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="font-display text-xl font-bold text-primary">Time Intervals</h2>
+            <p class="text-xs text-textGray">Define the standard lecture and break durations.</p>
+        </div>
+        <button class="btn-glow bg-secondary text-white px-6 py-2.5 rounded-xl text-sm font-bold">
+            <i class="fa-solid fa-clock"></i> Define Slots
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for slot in slots %}
+        <div class="bg-white p-6 rounded-[32px] border border-borderSubtle {% if slot.is_break %}bg-highlight/5 border-highlight/30{% endif %}">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-[10px] font-black uppercase text-primary tracking-widest">{{ slot.get_day_display }}</span>
+                {% if slot.is_break %}
+                <span class="bg-highlight/20 text-primary text-[8px] font-black px-2 py-1 rounded-full uppercase">Break</span>
+                {% endif %}
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-2xl font-display font-bold text-textDark">
+                    {{ slot.start_time|time:"H:i" }}
+                </div>
+                <div class="h-px w-8 bg-borderSubtle"></div>
+                <div class="text-2xl font-display font-bold text-textDark">
+                    {{ slot.end_time|time:"H:i" }}
+                </div>
+            </div>
+            {% if slot.break_name %}
+            <p class="mt-3 text-xs font-bold text-secondary italic">{{ slot.break_name }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

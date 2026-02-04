@@ -1,0 +1,40 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Submit Feedback | SmartSched{% endblock %}
+{% block header_title %}Support Request{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto fade-in-up">
+    <div class="bg-white rounded-[32px] border border-borderSubtle shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-borderSubtle bg-bgSoft/50 text-center">
+            <h3 class="font-display text-xl font-bold text-primary">Report a Schedule Issue</h3>
+            <p class="text-textGray text-sm mt-1">Submit your concerns regarding room clashes or workload to the Admin.</p>
+        </div>
+
+        <form method="POST" class="p-8 space-y-6">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="flex flex-col gap-2">
+                <label class="text-[10px] font-black text-textGray uppercase tracking-widest ml-1">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-red-500 text-[10px] font-bold mt-1">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full btn-glow bg-primary text-white py-4 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02]">
+                <i class="fa-solid fa-paper-plane mr-2"></i> Send Feedback
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('input, textarea, select').forEach(el => {
+        el.className = "w-full px-4 py-3 rounded-xl border border-borderSubtle bg-bgSoft focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all text-sm font-medium";
+    });
+</script>
+{% endblock %}

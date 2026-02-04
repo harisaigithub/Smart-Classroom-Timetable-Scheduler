@@ -1,0 +1,41 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Notifications | Smart Scheduler{% endblock %}
+{% block header_title %}Alert Center{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 fade-in-up">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="font-display text-2xl font-bold text-primary">Your Notifications</h2>
+        <span class="text-xs font-bold text-textGray bg-bgSoft px-4 py-2 rounded-full border border-borderSubtle">
+            {{ notifications.count }} Total Alerts
+        </span>
+    </div>
+
+    <div class="space-y-4">
+        {% for note in notifications %}
+        <div class="bg-white p-6 rounded-[24px] border border-borderSubtle shadow-sm flex items-start gap-5 transition-all hover:shadow-md {% if not note.is_read %}border-l-4 border-l-highlight{% endif %}">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 {% if note.is_read %}bg-bgSoft text-textGray{% else %}bg-highlight/10 text-primary{% endif %}">
+                <i class="fa-solid {% if 'Published' in note.title %}fa-calendar-check{% else %}fa-circle-exclamation{% endif %} text-xl"></i>
+            </div>
+            
+            <div class="flex-grow">
+                <div class="flex justify-between items-start mb-1">
+                    <h3 class="font-bold text-textDark">{{ note.title }}</h3>
+                    <span class="text-[10px] font-bold text-textGray uppercase tracking-tighter">{{ note.created_at|timesince }} ago</span>
+                </div>
+                <p class="text-sm text-textGray leading-relaxed">{{ note.message }}</p>
+            </div>
+
+            {% if not note.is_read %}
+            <div class="w-2 h-2 bg-highlight rounded-full mt-2"></div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="text-center py-20 bg-white rounded-[32px] border border-dashed border-borderSubtle">
+            <i class="fa-solid fa-bell-slash text-5xl text-borderSubtle mb-4"></i>
+            <p class="text-textGray font-medium">No new transmissions in your feed.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

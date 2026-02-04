@@ -1,72 +1,72 @@
 {% extends 'base1.html' %}
 {% load i18n %}
-{% block title %}Register Node | Video Insights Detection AI{% endblock %}
+{% block title %}Register | Smart Scheduler{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center py-24 px-4">
-    <div class="max-w-md w-full space-y-10 bg-black/60 backdrop-blur-3xl p-10 rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] pulse-box">
+<div class="flex items-center justify-center py-20 px-4 relative overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-secondary/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <div class="max-w-md w-full space-y-8 bg-white/80 backdrop-blur-xl p-10 rounded-[2.5rem] border border-borderSubtle shadow-2xl fade-in-up">
         
         <div class="text-center">
-            <div class="w-16 h-16 bg-black border border-[var(--accent-purple)] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(112,0,255,0.2)] transition-transform hover:rotate-12">
-                <i class="fa fa-user-plus text-2xl text-[var(--accent-purple)]"></i>
+            <div class="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary/20 transition-transform hover:scale-105">
+                <i class="fa-solid fa-user-plus text-3xl text-primary"></i>
             </div>
-            <h2 class="orbitron text-2xl font-black text-white tracking-tighter uppercase italic">
-                Node <span class="text-[var(--accent-purple)]">Registration</span>
+            <h2 class="font-display text-3xl font-bold text-primary tracking-tight">
+                Create <span class="text-secondary">Account</span>
             </h2>
-            <p class="mt-3 text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em]">
-                Create System Identity
+            <p class="mt-2 text-xs font-bold text-textGray uppercase tracking-[0.2em]">
+                Academic System Identity
             </p>
         </div>
 
-        <form class="mt-8 space-y-6" method="POST">
+        <form class="mt-8 space-y-5" method="POST">
             {% csrf_token %}
             <div class="space-y-4">
                 <div class="relative group">
-                    <i class="fa fa-at absolute left-4 top-4 text-gray-600 group-focus-within:text-[var(--accent-purple)] transition-colors"></i>
-                    <input name="email" type="email" required placeholder="System Email Address"
-                        class="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl focus:border-[var(--accent-purple)]/50 focus:ring-1 focus:ring-[var(--accent-purple)]/30 outline-none font-medium text-white placeholder-gray-600 transition-all">
+                    <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-textGray group-focus-within:text-primary transition-colors"></i>
+                    <input name="email" type="email" required placeholder="Academic Email Address"
+                        class="w-full pl-12 pr-4 py-4 bg-bgSoft border border-borderSubtle rounded-2xl focus:border-primary/50 focus:ring-2 focus:ring-primary/10 outline-none font-medium text-textDark placeholder-textGray transition-all">
                 </div>
                 
                 <div class="relative group">
-                    <i class="fa fa-key absolute left-4 top-4 text-gray-600 group-focus-within:text-[var(--accent-purple)] transition-colors"></i>
+                    <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-textGray group-focus-within:text-primary transition-colors"></i>
                     <input name="password" type="password" required placeholder="Security Password"
-                        class="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl focus:border-[var(--accent-purple)]/50 focus:ring-1 focus:ring-[var(--accent-purple)]/30 outline-none font-medium text-white placeholder-gray-600 transition-all">
+                        class="w-full pl-12 pr-4 py-4 bg-bgSoft border border-borderSubtle rounded-2xl focus:border-primary/50 focus:ring-2 focus:ring-primary/10 outline-none font-medium text-textDark placeholder-textGray transition-all">
+                </div>
+
+                <div class="relative group">
+                    <i class="fa-solid fa-user-tag absolute left-4 top-1/2 -translate-y-1/2 text-textGray group-focus-within:text-primary transition-colors z-10"></i>
+                    <select name="role" required
+                        class="w-full pl-12 pr-4 py-4 bg-bgSoft border border-borderSubtle rounded-2xl focus:border-primary/50 focus:ring-2 focus:ring-primary/10 outline-none font-medium text-textDark appearance-none cursor-pointer transition-all">
+                        <option value="" disabled selected>Select System Role</option>
+                        <option value="admin">Admin / HOD</option>
+                        <option value="faculty">Faculty / User</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-textGray pointer-events-none"></i>
                 </div>
             </div>
 
-            <div class="bg-[var(--accent-purple)]/10 p-5 rounded-2xl border border-[var(--accent-purple)]/30 flex items-start gap-4 animate-pulse">
-                <i class="fa fa-circle-info text-[var(--accent-purple)] mt-1"></i>
-                <p class="text-[10px] text-gray-300 font-bold uppercase tracking-widest leading-relaxed">
-                    SMTP Verification link will be transmitted to activate your access node.
+            <div class="bg-secondary/5 p-5 rounded-2xl border border-secondary/20 flex items-start gap-4">
+                <i class="fa-solid fa-shield-check text-secondary mt-1"></i>
+                <p class="text-[10px] text-textGray font-bold uppercase tracking-widest leading-relaxed">
+                    A secure 6-digit OTP will be transmitted to your email to initialize your access node. 
                 </p>
             </div>
 
-            <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
-                <a href="{% url 'password_reset' %}" class="text-gray-600 hover:text-[var(--accent-cyan)] transition">Lost Access?</a>
-                <a href="{% url 'login' %}" class="text-[var(--accent-cyan)] hover:underline">Existing Session</a>
-            </div>
-
             <button type="submit"
-                class="glow-button w-full bg-[var(--accent-purple)] text-white font-black py-4 rounded-xl uppercase tracking-[0.3em] text-[10px] flex items-center justify-center gap-3 active:scale-95 transition-all shadow-[0_0_20px_rgba(112,0,255,0.2)]">
-                <i class="fa fa-terminal"></i> Initialize Registration
+                class="btn-glow w-full bg-primary text-white font-bold py-4 rounded-2xl uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                <i class="fa-solid fa-fingerprint"></i> Create Your Account
             </button>
+            
+            <div class="text-center pt-2">
+                <p class="text-xs text-textGray font-medium">
+                    Already registered? 
+                    <a href="{% url 'login' %}" class="text-primary font-bold hover:text-secondary transition-colors ms-1">Existing Session</a>
+                </p>
+            </div>
         </form>
     </div>
 </div>
-
-<style>
-    /* Unique hover glow for signup specifically */
-    .glow-button:hover {
-        background-color: var(--accent-purple);
-        box-shadow: 0 0 40px var(--accent-purple);
-    }
-    
-    .pulse-box {
-        animation: signup-glow 6s infinite alternate;
-    }
-    @keyframes signup-glow {
-        from { box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
-        to { box-shadow: 0 0 40px rgba(112, 0, 255, 0.1); }
-    }
-</style>
 {% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Classrooms | Smart Scheduler{% endblock %}
+{% block header_title %}Infrastructure Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in-up">
+    <div class="flex justify-between items-center">
+        <h2 class="font-display text-xl font-bold text-primary">Classrooms & Labs</h2>
+        <a href="{% url 'classroom_add' %}" class="btn-glow bg-secondary text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> Add Facility
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for room in classrooms %}
+        <div class="bg-white p-6 rounded-[32px] border border-borderSubtle shadow-sm hover:shadow-md transition-all group">
+            <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
+                    <i class="fa-solid {% if room.room_type == 'lab' %}fa-flask-vial{% else %}fa-chalkboard-user{% endif %} text-xl"></i>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{% url 'classroom_edit' room.pk %}" class="text-textGray hover:text-primary transition-colors"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="{% url 'classroom_delete' room.pk %}" class="text-textGray hover:text-red-500 transition-colors"><i class="fa-solid fa-trash"></i></a>
+                </div>
+            </div>
+            <h3 class="font-display font-bold text-lg text-textDark">{{ room.name }}</h3>
+            <p class="text-xs font-bold text-textGray uppercase tracking-widest mt-1">{{ room.get_room_type_display }}</p>
+            
+            <div class="mt-6 pt-6 border-t border-borderSubtle flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-users text-secondary text-xs"></i>
+                    <span class="text-sm font-black text-textDark">{{ room.capacity }} Seats</span>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-1 rounded-lg {% if room.is_available %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                    {% if room.is_available %}Available{% else %}Maintenance{% endif %}
+                </span>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full py-20 text-center bg-white rounded-[32px] border border-dashed border-borderSubtle">
+            <p class="text-textGray font-medium">No classrooms or labs registered yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

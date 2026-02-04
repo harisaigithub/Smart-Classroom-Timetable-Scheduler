@@ -1,0 +1,78 @@
+{% extends 'base1.html' %}
+{% load timetable_extras %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4">
+    <div class="text-center mb-12">
+        <h1 class="text-3xl font-display font-black text-primary uppercase tracking-tight">Institutional Schedule</h1>
+        <p class="text-textGray font-medium mt-2">Public Access Portal for Students & Staff</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-[32px] border border-borderSubtle shadow-sm mb-8 flex flex-wrap justify-between items-center gap-4">
+        <form method="GET" class="flex items-center gap-4">
+            <select name="section" onchange="this.form.submit()" class="bg-bgSoft border border-borderSubtle rounded-xl px-6 py-3 text-sm font-bold text-primary outline-none focus:ring-4 focus:ring-highlight/10">
+                <option value="">-- Select Your Section --</option>
+                {% for sec in sections %}
+                    <option value="{{ sec.id }}" {% if selected_section == sec.id|stringformat:"i" %}selected{% endif %}>
+                        Section {{ sec.name }} ({{ sec.department.code }})
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        {% if selected_section %}
+        <a href="{% url 'export_timetable_pdf' selected_section %}" class="bg-primary text-white px-8 py-3 rounded-xl text-sm font-black flex items-center gap-2 hover:scale-105 transition-all">
+            <i class="fa-solid fa-download"></i> Download Official PDF
+        </a>
+        {% endif %}
+    </div>
+
+    {% if selected_section %}
+    <div class="bg-white rounded-[40px] border border-borderSubtle overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-primary text-white">
+                        <th class="p-6 text-xs font-black uppercase tracking-widest border-r border-white/10">Time</th>
+                        {% for day in days %}<th class="p-6 text-xs font-black uppercase tracking-widest text-center">{{ day }}</th>{% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for slot in timeslots %}
+                    <tr class="border-b border-borderSubtle">
+                        <td class="p-5 bg-bgSoft/50 text-center border-r border-borderSubtle">
+                            <span class="text-xs font-black text-primary">{{ slot.start_time|time:"H:i" }}</span>
+                        </td>
+                        {% for day in days %}
+                        <td class="p-2 min-w-[150px] h-28 relative">
+                            {% with time_key=slot.start_time|time:"H:i" %}
+                            {% with entry=grid|get_item:day|get_item:time_key %}
+                                {% if slot.is_break %}
+                                    <div class="absolute inset-1 bg-bgSoft/50 flex items-center justify-center rounded-xl border border-dashed border-borderSubtle">
+                                        <span class="text-[10px] font-black text-textGray/40 uppercase rotate-[-15deg]">{{ slot.break_name }}</span>
+                                    </div>
+                                {% elif entry %}
+                                    <div class="h-full p-4 rounded-2xl bg-highlight/5 border border-highlight/20 text-center">
+                                        <p class="text-[10px] font-black text-secondary uppercase">{{ entry.subject.code }}</p>
+                                        <h4 class="text-xs font-bold text-primary mt-1">{{ entry.subject.name }}</h4>
+                                        <p class="text-[9px] font-bold text-textGray mt-2 uppercase"><i class="fa-solid fa-location-dot"></i> {{ entry.classroom.name }}</p>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                            {% endwith %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-24 bg-white rounded-[40px] border border-dashed border-borderSubtle">
+        <i class="fa-solid fa-layer-group text-6xl text-bgSoft mb-6"></i>
+        <p class="text-xl font-display font-bold text-textGray">Select a section to view the live schedule.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

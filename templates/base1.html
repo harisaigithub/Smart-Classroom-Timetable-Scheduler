@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Smart Scheduler | Academic Excellence{% endblock %}</title>
+    <title>{% block title %}SmartSched | Academic Excellence{% endblock %}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -66,6 +66,9 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        /* Smooth scrolling for anchor links */
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body class="academic-bg min-h-screen flex flex-col font-sans text-textDark">
@@ -79,17 +82,31 @@
                     <i class="fa-solid fa-calendar-check text-xl"></i>
                 </div>
                 <span class="font-display text-xl font-bold tracking-tight text-primary">
-                    Smart<span class="text-secondary">Scheduler</span>
+                    Smart<span class="text-secondary">Sched</span>
                 </span>
             </a>
 
             <div class="hidden md:flex items-center gap-8 font-medium text-sm text-textGray">
-                <a href="#features" class="hover:text-primary transition-colors">Features</a>
-                <a href="#workflow" class="hover:text-primary transition-colors">Workflow</a>
-                <a href="/accounts/login/" class="text-primary font-bold">Sign In</a>
-                <a href="/accounts/signup/" class="btn-glow bg-primary text-white px-6 py-2.5 rounded-xl flex items-center gap-2">
-                    Get Started <i class="fa-solid fa-arrow-right text-xs"></i>
+                <a href="/#features" class="hover:text-primary transition-colors">Features</a>
+                <a href="{% url 'public_timetable' %}" class="hover:text-primary transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-table-list text-xs"></i> View Schedule
                 </a>
+                
+                <div class="h-5 w-px bg-borderSubtle"></div>
+
+                {% if user.is_authenticated %}
+                    <a href="{% if user.role == 'admin' %}{% url 'admin_dashboard' %}{% else %}{% url 'user_dashboard' %}{% endif %}" 
+                       class="text-primary font-bold">Go to Dashboard</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-primary font-bold">Sign In</a>
+                    <a href="{% url 'signup' %}" class="btn-glow bg-primary text-white px-6 py-2.5 rounded-xl flex items-center gap-2">
+                        Get Started <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="md:hidden">
+                <i class="fa-solid fa-bars text-primary text-xl"></i>
             </div>
         </div>
     </nav>
@@ -100,17 +117,17 @@
 
     <footer class="bg-white border-t border-borderSubtle py-12">
         <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
                 <div class="flex items-center gap-2 opacity-60">
                     <i class="fa-solid fa-graduation-cap text-primary"></i>
-                    <span class="font-display font-bold text-sm uppercase tracking-widest">B.Tech Final Year Project</span>
+                    <span class="font-display font-bold text-[10px] uppercase tracking-widest">B.Tech Final Year Project</span>
                 </div>
                 <p class="text-textGray text-sm">
-                    &copy; 2026 Smart Classroom & Timetable Scheduler. All Rights Reserved.
+                    &copy; 2026 Smart Classroom & Timetable Scheduler. Developed by P. Hari Sai.
                 </p>
-                <div class="flex gap-4 text-textGray">
-                    <i class="fa-brands fa-github hover:text-primary cursor-pointer"></i>
-                    <i class="fa-brands fa-linkedin hover:text-primary cursor-pointer"></i>
+                <div class="flex gap-6 text-textGray">
+                    <a href="#" class="hover:text-primary transition-all"><i class="fa-brands fa-github text-lg"></i></a>
+                    <a href="#" class="hover:text-primary transition-all"><i class="fa-brands fa-linkedin text-lg"></i></a>
                 </div>
             </div>
         </div>

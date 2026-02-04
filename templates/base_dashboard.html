@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard | SmartSched{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A', secondary: '#0D9488', highlight: '#22D3EE',
+                        bgSoft: '#F8FAFC', borderSubtle: '#E2E8F0', textDark: '#0F172A', textGray: '#64748B',
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Poppins', 'sans-serif'], },
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-gradient { background: linear-gradient(180deg, #1E3A8A 0%, #0F172A 100%); }
+        .nav-active { background: rgba(34, 211, 238, 0.1); border-left: 4px solid #22D3EE; color: #22D3EE !important; }
+        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-bgSoft font-sans text-textDark">
+
+    <aside class="fixed inset-y-0 left-0 w-64 sidebar-gradient text-white hidden md:flex flex-col z-50">
+        <div class="p-6 border-b border-white/10">
+            <a href="/" class="flex items-center gap-3">
+                <i class="fa-solid fa-calendar-check text-highlight text-2xl"></i>
+                <span class="font-display text-xl font-bold tracking-tight">Smart<span class="text-highlight">Sched</span></span>
+            </a>
+        </div>
+        
+        <nav class="flex-grow py-6 space-y-1">
+            <a href="{% if user.role == 'admin' %}{% url 'admin_dashboard' %}{% else %}{% url 'user_dashboard' %}{% endif %}" 
+               class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all {% if 'dashboard' in request.path %}nav-active{% endif %}">
+                <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
+            </a>
+
+            {% if user.role == 'admin' %}
+                <div class="px-6 pt-4 pb-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">Academic Core</div>
+                <a href="{% url 'department_list' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'department' in request.path %}nav-active{% endif %}">
+                    <i class="fa-solid fa-sitemap w-5"></i> Departments
+                </a>
+                <a href="{% url 'classroom_list' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'classroom' in request.path %}nav-active{% endif %}">
+                    <i class="fa-solid fa-door-open w-5"></i> Classrooms
+                </a>
+                <a href="{% url 'subject_list' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'subject' in request.path %}nav-active{% endif %}">
+                    <i class="fa-solid fa-book w-5"></i> Subjects
+                </a>
+
+                <div class="px-6 pt-4 pb-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">Planning</div>
+                <a href="{% url 'faculty_list' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'faculty' in request.path %}nav-active{% endif %}">
+                    <i class="fa-solid fa-user-tie w-5"></i> Faculty
+                </a>
+                <a href="{% url 'generate_timetable' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'generate' in request.path %}nav-active{% endif %}">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5"></i> Scheduler
+                </a>
+            {% else %}
+                <div class="px-6 pt-4 pb-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">Teaching Tools</div>
+                <a href="{% url 'user_dashboard' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'user_dashboard' in request.resolver_match.url_name %}nav-active{% endif %}">
+                    <i class="fa-solid fa-calendar-day w-5"></i> My Schedule
+                </a>
+                <a href="{% url 'faculty_availability' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'availability' in request.path %}nav-active{% endif %}">
+                    <i class="fa-solid fa-clock-rotate-left w-5"></i> Availability Matrix
+                </a>
+            {% endif %}
+
+            <a href="{% url 'timetable_view' %}" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'view' in request.path and 'timetable' in request.path %}nav-active{% endif %}">
+                <i class="fa-solid fa-table-cells w-5"></i> Timetable Grid
+            </a>
+
+            <div class="px-6 pt-4 pb-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">Support</div>
+            <a href="{% if user.role == 'admin' %}{% url 'admin_feedback_list' %}{% else %}{% url 'feedback_create' %}{% endif %}" 
+               class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-all text-white/70 {% if 'feedback' in request.path %}nav-active{% endif %}">
+                <i class="fa-solid fa-comment-dots w-5"></i> Feedback
+            </a>
+        </nav>
+
+        <div class="p-6 border-t border-white/10">
+            <a href="{% url 'logout' %}" class="flex items-center gap-4 text-red-400 hover:text-red-300 text-sm font-bold transition-colors">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="md:ml-64 flex flex-col min-h-screen">
+        <header class="h-16 bg-white border-b border-borderSubtle flex items-center justify-between px-8 sticky top-0 z-40">
+            <h1 class="font-display font-bold text-primary">{% block header_title %}System Overview{% endblock %}</h1>
+            <div class="flex items-center gap-6">
+                <a href="{% url 'notification_list' %}" class="relative text-textGray hover:text-primary transition-colors">
+                    <i class="fa-solid fa-bell text-xl"></i>
+                    {% if user.notifications.all %}
+                        {% if not user.notifications.first.is_read %}
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                        {% endif %}
+                    {% endif %}
+                </a>
+                <div class="h-8 w-px bg-borderSubtle"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold text-textDark">{{ user.email }}</p>
+                        <p class="text-[10px] font-bold text-secondary uppercase">{{ user.role }}</p>
+                    </div>
+                    <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-bold border border-primary/20">
+                        {{ user.email|slice:":1"|upper }}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-8">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    {% if messages %}
+    <div class="fixed bottom-8 right-8 z-[100] space-y-3">
+        {% for message in messages %}
+        <div class="flex items-center gap-3 px-6 py-4 bg-white border border-borderSubtle rounded-2xl shadow-2xl animate-in slide-in-from-right duration-300">
+            <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check text-secondary{% else %}fa-circle-exclamation text-red-500{% endif %}"></i>
+            <p class="text-xs font-bold text-textDark">{{ message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</body>
+</html>

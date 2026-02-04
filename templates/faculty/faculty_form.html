@@ -1,0 +1,55 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Faculty | Smart Scheduler{% endblock %}
+{% block header_title %}Faculty Administration{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto fade-in-up">
+    <div class="bg-white rounded-[32px] border border-borderSubtle shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-borderSubtle bg-bgSoft/50 text-center">
+            <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-user-tie text-2xl"></i>
+            </div>
+            <h3 class="font-display text-xl font-bold text-primary">
+                {% if form.instance.pk %}Update Faculty Profile{% else %}Register New Faculty{% endif %}
+            </h3>
+            <p class="text-textGray text-sm mt-1">Assign staff to departments and set teaching workload constraints.</p>
+        </div>
+
+        <form method="POST" class="p-8 space-y-6">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for field in form %}
+                <div class="flex flex-col gap-2 {% if field.name == 'user' or field.name == 'department' %}md:col-span-2{% endif %}">
+                    <label class="text-[10px] font-black text-textGray uppercase tracking-widest ml-1">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <p class="text-[9px] text-textGray italic px-1">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% if field.errors %}
+                        <p class="text-red-500 text-[10px] font-bold mt-1">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="pt-6 border-t border-borderSubtle flex gap-4">
+                <button type="submit" class="btn-glow bg-primary text-white px-10 py-4 rounded-2xl font-bold text-sm flex-1 transition-all hover:scale-[1.02]">
+                    <i class="fa-solid fa-id-card mr-2"></i> {% if form.instance.pk %}Save Changes{% else %}Create Faculty Profile{% endif %}
+                </button>
+                <a href="{% url 'faculty_list' %}" class="bg-bgSoft border border-borderSubtle text-textGray px-10 py-4 rounded-2xl font-bold text-sm hover:bg-white transition-all text-center">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.className = "w-full px-4 py-3 rounded-xl border border-borderSubtle bg-bgSoft focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all text-sm font-medium";
+    });
+</script>
+{% endblock %}

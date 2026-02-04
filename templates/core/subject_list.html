@@ -1,0 +1,54 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Subjects | Smart Scheduler{% endblock %}
+{% block header_title %}Curriculum Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in-up">
+    <div class="flex justify-between items-center">
+        <h2 class="font-display text-xl font-bold text-primary">Academic Subjects</h2>
+        <a href="{% url 'subject_add' %}" class="btn-glow bg-primary text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
+            <i class="fa-solid fa-book-bookmark"></i> Add New Subject
+        </a>
+    </div>
+
+    <div class="bg-white rounded-[32px] border border-borderSubtle shadow-sm overflow-hidden">
+        <table class="w-full text-left">
+            <thead class="bg-bgSoft text-textGray text-[10px] font-bold uppercase tracking-widest">
+                <tr>
+                    <th class="px-8 py-5">Code & Name</th>
+                    <th class="px-6 py-5">Department</th>
+                    <th class="px-6 py-5">Sem</th>
+                    <th class="px-6 py-5">Type</th>
+                    <th class="px-6 py-5">Credits</th>
+                    <th class="px-6 py-5 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-borderSubtle">
+                {% for subject in subjects %}
+                <tr class="hover:bg-bgSoft/30 transition-colors group">
+                    <td class="px-8 py-5">
+                        <p class="font-bold text-textDark">{{ subject.name }}</p>
+                        <p class="text-[10px] font-black text-secondary uppercase">{{ subject.code }}</p>
+                    </td>
+                    <td class="px-6 py-5 text-sm font-medium text-textGray">{{ subject.department.code }}</td>
+                    <td class="px-6 py-5 text-sm font-bold text-primary">S{{ subject.semester.number }}</td>
+                    <td class="px-6 py-5">
+                        <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase {% if subject.subject_type == 'theory' %}bg-blue-100 text-blue-700{% else %}bg-purple-100 text-purple-700{% endif %}">
+                            {{ subject.subject_type }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-5 text-sm font-black text-textDark">{{ subject.credit_hours }}</td>
+                    <td class="px-6 py-5 text-right space-x-2">
+                        <button class="text-textGray hover:text-primary transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-20 text-center text-textGray">No subjects registered yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

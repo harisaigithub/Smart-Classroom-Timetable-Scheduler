@@ -1,0 +1,49 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Department | Smart Scheduler{% endblock %}
+{% block header_title %}Institutional Setup{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto fade-in-up">
+    <div class="bg-white rounded-[32px] border border-borderSubtle shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-borderSubtle bg-bgSoft/50">
+            <h3 class="font-display text-xl font-bold text-primary">
+                {% if form.instance.pk %}Update{% else %}Register New{% endif %} Department
+            </h3>
+            <p class="text-textGray text-sm mt-1">Define an academic unit within the institution.</p>
+        </div>
+
+        <form method="POST" class="p-8 space-y-6">
+            {% csrf_token %}
+            <div class="space-y-4">
+                {% for field in form %}
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-textGray uppercase tracking-widest ml-1">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p class="text-red-500 text-[10px] font-bold mt-1">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="pt-6 flex gap-4">
+                <button type="submit" class="btn-glow bg-primary text-white px-8 py-3 rounded-xl font-bold text-sm flex-1">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i> Save Department
+                </button>
+                <a href="{% url 'department_list' %}" class="bg-bgSoft border border-borderSubtle text-textGray px-8 py-3 rounded-xl font-bold text-sm hover:bg-white transition-all text-center">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Dynamically inject Tailwind styling into Django form fields
+    document.querySelectorAll('input').forEach(el => {
+        el.className = "w-full px-4 py-3 rounded-xl border border-borderSubtle bg-bgSoft focus:ring-4 focus:ring-primary/5 focus:border-primary/50 outline-none transition-all text-sm font-medium";
+    });
+</script>
+{% endblock %}

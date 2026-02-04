@@ -1,0 +1,93 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Faculty Dashboard | SmartSched{% endblock %}
+{% block header_title %}My Academic Overview{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 fade-in-up">
+    
+    <div class="space-y-8">
+        <div class="bg-white p-8 rounded-[32px] border border-borderSubtle shadow-sm text-center">
+            <h3 class="text-[10px] font-black uppercase text-textGray tracking-widest mb-6">Weekly Workload</h3>
+            <div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+                <svg class="w-full h-full transform -rotate-90">
+                    <circle cx="96" cy="96" r="80" stroke="currentColor" stroke-width="12" fill="transparent" class="text-bgSoft" />
+                    <circle cx="96" cy="96" r="80" stroke="currentColor" stroke-width="12" fill="transparent" 
+                            stroke-dasharray="502.4" stroke-dashoffset="{{ workload_offset }}"
+                            class="text-secondary transition-all duration-1000" stroke-linecap="round" />
+                </svg>
+                <div class="absolute text-center">
+                    <span class="block text-3xl font-black text-primary">{{ workload_percent }}%</span>
+                    <span class="text-[10px] font-bold text-textGray uppercase">Utilized</span>
+                </div>
+            </div>
+            <p class="mt-6 text-xs text-textGray font-medium">
+                Currently teaching <strong>{{ my_classes.count }}</strong> classes per week.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-3xl border border-borderSubtle">
+                <i class="fa-solid fa-book text-highlight mb-3 block text-xl"></i>
+                <span class="text-2xl font-black text-primary">{{ total_subjects }}</span>
+                <p class="text-[10px] font-bold text-textGray uppercase">Subjects</p>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-borderSubtle">
+                <i class="fa-solid fa-clock text-secondary mb-3 block text-xl"></i>
+                <span class="text-2xl font-black text-primary">{{ today_classes.count }}</span>
+                <p class="text-[10px] font-bold text-textGray uppercase">Today</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white rounded-[32px] border border-borderSubtle overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-borderSubtle flex justify-between items-center bg-bgSoft/30">
+                <h3 class="font-display font-bold text-primary">Today's Lectures</h3>
+                <span class="text-[10px] font-black bg-primary text-white px-3 py-1 rounded-full uppercase tracking-tighter">Live Schedule</span>
+            </div>
+            <div class="p-6">
+                {% if today_classes %}
+                    <div class="space-y-4">
+                        {% for class in today_classes %}
+                        <div class="flex items-center gap-6 p-4 rounded-2xl border border-borderSubtle hover:border-highlight/50 hover:bg-highlight/5 transition-all group">
+                            <div class="text-center min-w-[80px]">
+                                <span class="block text-sm font-black text-primary">{{ class.timeslot.start_time|time:"H:i" }}</span>
+                                <span class="text-[9px] font-bold text-textGray uppercase">to {{ class.timeslot.end_time|time:"H:i" }}</span>
+                            </div>
+                            <div class="h-10 w-px bg-borderSubtle"></div>
+                            <div class="flex-grow">
+                                <h4 class="text-sm font-bold text-textDark group-hover:text-primary transition-colors">{{ class.subject.name }}</h4>
+                                <p class="text-[10px] font-bold text-textGray uppercase tracking-wide">{{ class.subject.code }} • Section {{ class.section.name }}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bgSoft border border-borderSubtle text-[10px] font-black text-textDark">
+                                    <i class="fa-solid fa-location-dot text-secondary"></i> {{ class.classroom.name }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="py-12 text-center">
+                        <div class="w-16 h-16 bg-bgSoft rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-mug-hot text-textGray"></i>
+                        </div>
+                        <p class="text-sm font-bold text-textGray">No classes scheduled for today.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'timetable_view' %}" class="block bg-primary p-6 rounded-[24px] text-white hover:scale-[1.01] transition-transform shadow-lg shadow-primary/20 group">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h4 class="font-bold text-lg">View Full Week Grid</h4>
+                    <p class="text-white/60 text-xs mt-1 font-medium">Access your complete Monday-Saturday teaching matrix.</p>
+                </div>
+                <i class="fa-solid fa-arrow-right text-2xl group-hover:translate-x-2 transition-transform"></i>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

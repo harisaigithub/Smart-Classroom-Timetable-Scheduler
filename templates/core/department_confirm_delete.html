@@ -1,0 +1,30 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Delete Department | Smart Scheduler{% endblock %}
+{% block header_title %}Danger Zone{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-12 fade-in-up">
+    <div class="bg-white rounded-[32px] border-2 border-red-100 shadow-2xl overflow-hidden">
+        <div class="p-8 text-center bg-red-50/50">
+            <div class="w-20 h-20 bg-red-100 text-red-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
+            </div>
+            <h3 class="font-display text-xl font-bold text-textDark">Are you sure?</h3>
+            <p class="text-textGray text-sm mt-2">
+                You are about to delete <strong>{{ object.name }}</strong> ({{ object.code }}). 
+                This action will remove all linked data and cannot be undone.
+            </p>
+        </div>
+
+        <form method="POST" class="p-8 flex flex-col gap-3">
+            {% csrf_token %}
+            <button type="submit" class="w-full bg-red-600 text-white py-4 rounded-2xl font-bold text-sm hover:bg-red-700 transition-all shadow-lg shadow-red-200">
+                Yes, Delete Permanently
+            </button>
+            <a href="{% url 'department_list' %}" class="w-full text-center py-4 text-textGray font-bold text-sm hover:text-textDark transition-all">
+                No, Keep it
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

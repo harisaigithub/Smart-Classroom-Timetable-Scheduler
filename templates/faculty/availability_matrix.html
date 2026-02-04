@@ -1,0 +1,54 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Availability Matrix | SmartSched{% endblock %}
+{% block header_title %}Schedule Preferences{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto fade-in-up">
+    <div class="bg-white rounded-[32px] border border-borderSubtle shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-borderSubtle bg-bgSoft/50 text-center">
+            <h3 class="font-display text-xl font-bold text-primary">Mark Your "Busy" Hours</h3>
+            <p class="text-textGray text-sm mt-1">Check the boxes where you are <b>unavailable</b> to teach. The scheduler will respect these gaps.</p>
+        </div>
+
+        <form method="POST" class="p-8">
+            {% csrf_token %}
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="text-[10px] font-black uppercase text-textGray">
+                            <th class="p-4 text-left">Time Period</th>
+                            {% for day in days %}<th class="p-4 text-center">{{ day|slice:":3" }}</th>{% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slot in timeslots %}
+                        <tr class="border-t border-borderSubtle hover:bg-bgSoft/30 transition-colors">
+                            <td class="p-4 text-xs font-bold text-primary">
+                                {{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}
+                            </td>
+                            {% for day in days %}
+                            <td class="p-4 text-center">
+                                {% with key=day|add:"_"|add:slot.start_time|time:"H:i" %}
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="busy_{{ key }}" value="1" 
+                                           class="w-5 h-5 rounded border-borderSubtle text-primary focus:ring-highlight/30"
+                                           {% if key in busy_list %}checked{% endif %}>
+                                </label>
+                                {% endwith %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button type="submit" class="btn-glow bg-primary text-white px-10 py-3 rounded-2xl font-bold text-sm transition-all hover:scale-105">
+                    Update Availability
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

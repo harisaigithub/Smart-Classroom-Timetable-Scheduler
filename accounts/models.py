@@ -21,9 +21,18 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractUser):
+    # Role Constants
+    ADMIN = 'admin'
+    FACULTY = 'faculty'
+    ROLE_CHOICES = [
+        (ADMIN, 'Admin/HOD'),
+        (FACULTY, 'Faculty/User'),
+    ]
+
     username = None
     email = models.EmailField(unique=True)
-
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=FACULTY)
+    profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     login_count = models.PositiveIntegerField(default=0)
 
@@ -33,8 +42,7 @@ class User(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.email
-
+        return f"{self.email} ({self.role})"
 
 class EmailOTP(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -42,19 +50,6 @@ class EmailOTP(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_expired(self):
+        # Expire after 10 minutes
         return timezone.now() > self.created_at + timedelta(minutes=10)
 
-
-class Notification(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='notifications'
-    )
-    title = models.CharField(max_length=100)
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Notification for {self.user.email}: {self.title}"

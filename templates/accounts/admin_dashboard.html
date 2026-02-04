@@ -1,0 +1,194 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Admin Dashboard | Smart Scheduler{% endblock %}
+{% block header_title %}Administrative Overview{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="space-y-8 animate-in fade-in duration-700">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-[24px] border border-borderSubtle shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                    <i class="fa-solid fa-sitemap text-xl"></i>
+                </div>
+                <span class="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded-lg">Live</span>
+            </div>
+            <h3 class="text-textGray text-sm font-medium">Total Departments</h3>
+            <p class="text-3xl font-display font-bold text-textDark">{{ total_departments }}</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-[24px] border border-borderSubtle shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
+                    <i class="fa-solid fa-door-open text-xl"></i>
+                </div>
+                <span class="text-xs font-bold text-secondary bg-secondary/10 px-2 py-1 rounded-lg">Active</span>
+            </div>
+            <h3 class="text-textGray text-sm font-medium">Classrooms & Labs</h3>
+            <p class="text-3xl font-display font-bold text-textDark">{{ total_rooms }}</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-[24px] border border-borderSubtle shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-highlight/10 rounded-2xl flex items-center justify-center text-primary">
+                    <i class="fa-solid fa-user-tie text-xl"></i>
+                </div>
+                <span class="text-xs font-bold text-highlight bg-highlight/10 px-2 py-1 rounded-lg">Staff</span>
+            </div>
+            <h3 class="text-textGray text-sm font-medium">Total Faculty</h3>
+            <p class="text-3xl font-display font-bold text-textDark">{{ total_faculty }}</p>
+        </div>
+
+        <div class="bg-primary p-6 rounded-[24px] shadow-lg shadow-primary/20 text-white relative overflow-hidden group">
+            <div class="relative z-10">
+                <h3 class="font-display font-bold text-lg mb-2">Ready to Schedule?</h3>
+                <p class="text-white/70 text-xs mb-4">Run the optimization engine now.</p>
+                <form action="{% url 'generate_timetable' %}" method="GET">
+                    <button type="submit" class="bg-highlight text-primary px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-transform flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Now
+                    </button>
+                </form>
+            </div>
+            <i class="fa-solid fa-calendar-days absolute -right-4 -bottom-4 text-8xl text-white/10 group-hover:rotate-12 transition-transform"></i>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 bg-white rounded-[32px] border border-borderSubtle p-8 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-display font-bold text-primary">Department Load Distribution</h3>
+                <p class="text-[10px] font-black text-textGray uppercase tracking-widest">Live Metrics</p>
+            </div>
+            <div class="h-[300px] w-full">
+                <canvas id="deptLoadChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[32px] border border-borderSubtle p-8 shadow-sm flex flex-col">
+            <h3 class="font-display font-bold text-primary mb-6">Room Utilization</h3>
+            <div class="flex-grow flex flex-col justify-center items-center">
+                <div class="relative w-48 h-48 flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="96" cy="96" r="80" stroke="currentColor" stroke-width="12" fill="transparent" class="text-bgSoft" />
+                        <circle cx="96" cy="96" r="80" stroke="currentColor" stroke-width="12" fill="transparent" 
+                                stroke-dasharray="502.4" 
+                                stroke-dashoffset="{{ 502.4|add:utilization_offset }}" 
+                                class="text-secondary transition-all duration-1000" />
+                    </svg>
+                    <div class="absolute text-center">
+                        <p class="text-4xl font-display font-black text-textDark">{{ utilization_rate }}%</p>
+                        <p class="text-[10px] font-bold text-textGray uppercase tracking-tighter">Capacity Used</p>
+                    </div>
+                </div>
+                <div class="mt-8 grid grid-cols-2 gap-4 w-full">
+                    <div class="text-center">
+                        <p class="text-sm font-black text-textDark">{{ total_rooms }}</p>
+                        <p class="text-[10px] text-textGray font-bold uppercase">Total Units</p>
+                    </div>
+                    <div class="text-center border-l border-borderSubtle">
+                        <p class="text-sm font-black text-textDark">{{ total_sections }}</p>
+                        <p class="text-[10px] text-textGray font-bold uppercase">Active Batches</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 bg-white rounded-[32px] border border-borderSubtle overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-borderSubtle flex justify-between items-center">
+                <h3 class="font-display font-bold text-primary">Recent Departments</h3>
+                <a href="{% url 'department_list' %}" class="text-xs font-bold text-secondary hover:underline">View All</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-bgSoft text-textGray text-[10px] font-bold uppercase tracking-widest">
+                        <tr>
+                            <th class="px-6 py-4">Dept Name</th>
+                            <th class="px-6 py-4">Code</th>
+                            <th class="px-6 py-4">Created</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-borderSubtle">
+                        {% for dept in recent_departments %}
+                        <tr class="hover:bg-bgSoft transition-colors">
+                            <td class="px-6 py-4 font-medium">{{ dept.name }}</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-primary/5 text-primary rounded-lg text-xs font-bold">{{ dept.code }}</span></td>
+                            <td class="px-6 py-4 text-textGray">{{ dept.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="px-6 py-8 text-center text-textGray">No departments added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[32px] border border-borderSubtle p-8 shadow-sm">
+            <h3 class="font-display font-bold text-primary mb-6">System Status</h3>
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div>
+                        <p class="text-xs font-bold text-textDark">Database Connected</p>
+                        <p class="text-[10px] text-textGray">PostgreSQL/SQLite v3.x</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-2 h-2 rounded-full bg-highlight"></div>
+                    <div>
+                        <p class="text-xs font-bold text-textDark">SMTP Services Active</p>
+                        <p class="text-[10px] text-textGray">Gmail relay operational</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-2 h-2 rounded-full bg-secondary"></div>
+                    <div>
+                        <p class="text-xs font-bold text-textDark">Security Protocol</p>
+                        <p class="text-[10px] text-textGray">OTP Authentication Active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Department Load Chart Initialization
+    const ctx = document.getElementById('deptLoadChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ dept_names|safe }},
+            datasets: [{
+                label: 'Scheduled Classes',
+                data: {{ dept_counts|safe }},
+                backgroundColor: '#1E3A8A',
+                borderRadius: 8,
+                hoverBackgroundColor: '#0D9488'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#E2E8F0', drawBorder: false },
+                    ticks: { font: { family: 'Inter', size: 10 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { family: 'Inter', size: 10, weight: 'bold' } }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

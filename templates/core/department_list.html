@@ -1,0 +1,57 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Departments | Smart Scheduler{% endblock %}
+{% block header_title %}Department Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6 fade-in-up">
+    <div class="flex justify-between items-center">
+        <h2 class="font-display text-xl font-bold text-primary">Academic Units</h2>
+        <a href="{% url 'department_add' %}" class="btn-glow bg-primary text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> Add Department
+        </a>
+    </div>
+
+    <div class="bg-white rounded-[32px] border border-borderSubtle overflow-hidden shadow-sm">
+        <table class="w-full text-left">
+            <thead class="bg-bgSoft text-textGray text-[10px] font-bold uppercase tracking-widest">
+                <tr>
+                    <th class="px-8 py-5 text-center w-20">#</th>
+                    <th class="px-6 py-5">Department Name</th>
+                    <th class="px-6 py-5">Code</th>
+                    <th class="px-6 py-5">Created On</th>
+                    <th class="px-6 py-5 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-borderSubtle">
+                {% for dept in departments %}
+                <tr class="hover:bg-bgSoft/50 transition-colors group">
+                    <td class="px-8 py-5 text-center text-textGray font-bold">{{ forloop.counter }}</td>
+                    <td class="px-6 py-5 font-bold text-textDark">{{ dept.name }}</td>
+                    <td class="px-6 py-5">
+                        <span class="bg-secondary/10 text-secondary px-3 py-1 rounded-lg text-xs font-black">{{ dept.code }}</span>
+                    </td>
+                    <td class="px-6 py-5 text-textGray text-sm">{{ dept.created_at|date:"d M, Y" }}</td>
+                    <td class="px-6 py-5 text-right space-x-2">
+                        <a href="{% url 'department_edit' dept.pk %}" class="text-primary hover:bg-primary/10 p-2 rounded-lg transition-all">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                        <a href="{% url 'department_delete' dept.pk %}" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-20 text-center">
+                        <div class="max-w-xs mx-auto space-y-4">
+                            <i class="fa-solid fa-folder-open text-5xl text-borderSubtle"></i>
+                            <p class="text-textGray font-medium">No departments registered in the infrastructure yet.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

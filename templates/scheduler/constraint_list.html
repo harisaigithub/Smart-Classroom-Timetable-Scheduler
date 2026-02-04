@@ -1,0 +1,64 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Constraints | Smart Scheduler{% endblock %}
+{% block header_title %}Scheduling Constraints{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 fade-in-up">
+    <div class="lg:col-span-1 space-y-6">
+        <div class="bg-white p-8 rounded-[32px] border border-borderSubtle shadow-sm">
+            <h3 class="font-display font-bold text-primary mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-secondary"></i> Validation Rules
+            </h3>
+            <div class="space-y-4">
+                {% for rule in rules %}
+                <div class="flex items-center justify-between p-4 bg-bgSoft rounded-2xl border border-transparent hover:border-highlight/30 transition-all">
+                    <div>
+                        <p class="text-xs font-black text-textDark uppercase">{{ rule.get_rule_type_display }}</p>
+                        <p class="text-[9px] text-textGray font-bold uppercase tracking-tighter">Enforced: {{ rule.is_mandatory|yesno:"Yes,No" }}</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" {% if rule.is_mandatory %}checked{% endif %}>
+                        <div class="w-9 h-5 bg-borderSubtle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-secondary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-[32px] border border-borderSubtle shadow-sm overflow-hidden">
+            <div class="p-8 border-b border-borderSubtle flex justify-between items-center bg-bgSoft/30">
+                <h3 class="font-display font-bold text-primary">Pre-defined (Fixed) Slots</h3>
+                <button class="btn-glow bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                    <i class="fa-solid fa-anchor mr-2"></i> Fix New Slot
+                </button>
+            </div>
+            <table class="w-full text-left">
+                <thead class="bg-bgSoft text-textGray text-[9px] font-black uppercase tracking-widest">
+                    <tr>
+                        <th class="px-6 py-4">Subject</th>
+                        <th class="px-6 py-4">Faculty</th>
+                        <th class="px-6 py-4">Time</th>
+                        <th class="px-6 py-4">Room</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-borderSubtle">
+                    {% for slot in fixed_slots %}
+                    <tr class="hover:bg-bgSoft/50 transition-colors">
+                        <td class="px-6 py-4 font-bold text-textDark">{{ slot.subject.code }}</td>
+                        <td class="px-6 py-4 text-textGray">{{ slot.faculty.user.email }}</td>
+                        <td class="px-6 py-4 font-black text-secondary">{{ slot.timeslot.start_time|time:"H:i" }}</td>
+                        <td class="px-6 py-4"><span class="bg-highlight/10 text-primary px-2 py-1 rounded-lg font-bold text-[10px]">{{ slot.classroom.name }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-12 text-center text-textGray italic">No fixed slots defined for this cycle.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
